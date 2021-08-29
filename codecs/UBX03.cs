@@ -36,22 +36,27 @@ namespace csNMEA
     public class UBX03Packet : Decoder
     {
         public UBX03Packet(string[] fields) {
-            int numsats = Helpers.parseIntSafe(fields[2]);
-            int offset = 3;
-            List<Satellite> sats = new List<Satellite>();
-            for (int i = 0; i < numsats; i++) {
-                int satid = Helpers.parseIntSafe(fields[offset]);
-                sats[i] = new Satellite(satid,
-                                        getSatelliteType(satid),
-                                        fields[offset + 1],
-                                        Helpers.parseIntSafe(fields[offset + 2]),
-                                        Helpers.parseIntSafe(fields[offset + 3]),
-                                        Helpers.parseIntSafe(fields[offset + 4]),
-                                        Helpers.parseIntSafe(fields[offset + 5]));
-                offset += 6;
+            sentenceId = "UBX03";
+            sentenceName = "Satellite status"; 
+
+            if (int.TryParse(fields[2], out int numsats)) {
+                int offset = 3;
+                List<Satellite> sats = new List<Satellite>(numsats);
+                for (int i = 0; i < numsats; i++) {
+                    if(int.TryParse(fields[offset], out int satid)) {
+                        sats.Add(new Satellite(
+                            satid,
+                            getSatelliteType(satid),
+                            fields[offset + 1],
+                            Helpers.parseIntSafe(fields[offset + 2]),
+                            Helpers.parseIntSafe(fields[offset + 3]),
+                            Helpers.parseIntSafe(fields[offset + 4]),
+                            Helpers.parseIntSafe(fields[offset + 5])));
+                    }
+                    offset += 6;
+                }
+                satellites = sats;
             }
-            satellites = sats;
-            
         }
 
         public override string getJson()

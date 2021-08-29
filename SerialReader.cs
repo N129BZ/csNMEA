@@ -17,7 +17,7 @@
 using System;
 using System.IO.Ports;
 using System.Diagnostics;
-using System.Threading;
+
 
 namespace csNMEA
 {
@@ -25,15 +25,28 @@ namespace csNMEA
         
         public SerialData(string sentence)
         {
-            if (!sentence.StartsWith("$")) {
+            string s = new string(sentence);
+            bool isubx = s.Contains("UBX");
+            
+            //Debug.Assert(!isubx);
+            
+            if (!s.StartsWith("$")) {
                 fields = new string[] {""};
+                sentenceId = "";
             }
             else {
                 // trim the asterisk and the 2-digit checksum
-                fields = sentence.Substring(0, sentence.Length - 3).Split(",");
+                fields = s.Substring(0, sentence.Length - 3).Split(",");
+                sentenceId = fields[0];
             }
         }
 
+        public bool isValid { 
+            get {
+                return sentenceId.Length > 1;
+            }
+        }
+        public string sentenceId { get; set; }
         public string[] fields { get; set; }
     }
 
@@ -212,7 +225,6 @@ namespace csNMEA
         	serialPortWrite(makeUBXCFG(0x06, 0x16, 8, new byte[]{0x01, 0x03, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00}));
 
             // UBX-CFG-MSG (NMEA Standard Messages)  msg   msg   Ports 1-6 (every 10th message over UART1, every message over USB)
-        	//                                       Class ID    DDC   UART1 UART2 USB   I2C   Res
         	serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[] {0xF0, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00})); // GGA - Global positioning system fix data
         	serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[] {0xF0, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})); // GLL - Latitude and longitude, with time of position fix and status
         	serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[] {0xF0, 0x02, 0x00, 0x05, 0x00, 0x05, 0x00, 0x00})); // GSA - GNSS DOP and Active Satellites
@@ -230,9 +242,9 @@ namespace csNMEA
 
             // UBX-CFG-MSG (TURN OFF NMEA PUBX Messages)      msg   msg   Ports 1-6
 	        //                                                 Class     ID  DDC  UART1 UART2  USB   I2C   Reseved
-            serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[]{0xF1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
-            serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[]{0xF1, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
-            serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[]{0xF1, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+            serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[]{0xF1, 0x00, 0x01, 0x01, 0x00, 0x01, 0x01, 0x00}));
+            serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[]{0xF1, 0x03, 0x01, 0x01, 0x00, 0x01, 0x01, 0x00}));
+            serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[]{0xF1, 0x04, 0x01, 0x01, 0x00, 0x01, 0x01, 0x00}));
 
             if (navrate == 10) {
         		serialPortWrite(makeUBXCFG(0x06, 0x08, 6, new byte[] {0x64, 0x00, 0x01, 0x00, 0x01, 0x00})); // 100ms & 1 cycle -> 10Hz (UBX-CFG-RATE payload bytes: little endian!)
@@ -387,4 +399,4 @@ namespace csNMEA
         }
     }
 }
- 
+

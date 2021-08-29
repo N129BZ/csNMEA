@@ -65,99 +65,91 @@ namespace csNMEA
         }
 
         private static void SerialDataReceived(SerialData data) {
-            string sentenceid = "";
-            string s = data.fields[0];
-            int fl = s.Length;
+            string json = "";
+            
+            if (!data.isValid) return;
 
-            switch (fl) {
-                case 0:  // Garbage message, get out now
-                    return;
-                case 8:  // Example: $PUBX00
-                    sentenceid = data.fields[0].Substring(3, 5);
-                    break;
-                case 7:  // Example: $PRDID
-                    sentenceid = data.fields[0].Substring(3, 4);
-                    break;
-                case 6:  // Example: $GXXX (all the rest)
-                default:  
-                    sentenceid = data.fields[0].Substring(3, 3);
-                    break;
+            if (data.sentenceId.Contains("APB")) {
+                json = new APBPacket(data.fields).getJson();
             }
-
-            if (sentenceid.Contains("APB")) {
-                s = new APBPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("BWC")) { 
+                json = new BWCPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("BWC")) { 
-                s = new BWCPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("DBT")) { 
+                json = new DBTPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("DBT")) { 
-                s = new DBTPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("DTM")) { 
+                json = new DTMPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("DTM")) { 
-                s = new DTMPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("GGA")) { 
+                json = new GGAPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("GGA")) { 
-                s = new GGAPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("GLL")) { 
+                json = new GLLPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("GLL")) { 
-                s = new GLLPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("GNS")) {
+                json = new GNSPacket(data.fields).getJson(); 
             }
-            else if (sentenceid.Contains("GNS")) {
-                s = new GNSPacket(data.fields).getJson(); 
+            else if (data.sentenceId.Contains("GSA")) {
+                json = new GSAPacket(data.fields).getJson(); 
             }
-            else if (sentenceid.Contains("GSA")) {
-                s = new GSAPacket(data.fields).getJson(); 
+            else if (data.sentenceId.Contains("GST")) {
+                json = new GSTPacket(data.fields).getJson(); 
             }
-            else if (sentenceid.Contains("GST")) {
-                s = new GSTPacket(data.fields).getJson(); 
+            else if (data.sentenceId.Contains("GSV")) { 
+                json = new GSVPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("GSV")) { 
-                s = new GSVPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("HDG")) { 
+                json = new HDGPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("HDG")) { 
-                s = new HDGPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("HDM")) { 
+                json = new HDMPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("HDM")) { 
-                s = new HDMPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("HDT")) {
+                json = new HDTPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("HDT")) {
-                s = new HDTPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("MTK")) { 
+                json = new MTKPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("MTK")) { 
-                s = new MTKPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("MWV")) { 
+                json = new MWVPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("MWV")) { 
-                s = new MWVPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("RDID")) { 
+                json = new RDIDPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("RDID")) { 
-                s = new RDIDPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("RMC")) { 
+                json = new RMCPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("RMC")) { 
-                s = new RMCPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("VHW")) { 
+                json = new VHWPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("VHW")) { 
-                s = new VHWPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("VTG")) { 
+                json = new VTGPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("VTG")) { 
-                s = new VTGPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("ZDA")) { 
+                json = new ZDAPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("ZDA")) { 
-                s = new ZDAPacket(data.fields).getJson();
+            else if (data.sentenceId.Contains("TXT")) { 
+                json = new TXTPacket(data.fields).getJson();
             }
-            else if (sentenceid.Contains("TXT")) { 
-                s = new TXTPacket(data.fields).getJson();
-            }
-            else if (sentenceid.Contains("UBX00")) { 
-                s = new UBX00Packet(data.fields).getJson();
-            }
-            else if (sentenceid.Contains("UBX03")) { 
-                s = new UBX03Packet(data.fields).getJson();
-            }
-            else if (sentenceid.Contains("UBX04")) { 
-                s = new UBX04Packet(data.fields).getJson();
+            else if (data.sentenceId.Contains("UBX")) { 
+                UBXPacket p = new UBXPacket(data.fields);
+                switch (p.PacketId) {
+                    case 0:
+                        json = p.UBX00Packet.getJson();
+                        break;
+                    case 3:
+                        json = p.UBX03Packet.getJson();
+                        break;
+                    case 4:
+                        json = p.UBX04Packet.getJson();
+                        break;
+                    default:
+                        return;
+                }
             }
 
-            Console.WriteLine(s);
+            Console.WriteLine(json);
         }
     }
 }

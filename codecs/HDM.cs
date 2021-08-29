@@ -29,7 +29,7 @@ namespace csNMEA
 
         public override string getJson()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
         
         public float heading { get; set; }

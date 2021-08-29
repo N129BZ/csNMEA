@@ -61,7 +61,7 @@ namespace csNMEA
 
         public override string getJson()
         {
-            return JsonConvert.SerializeObject(this);
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
         
         public List<Satellite> satellites { get; set; }

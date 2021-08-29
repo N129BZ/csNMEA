@@ -1,0 +1,8 @@
+{
+    "csGPSconfig": {
+        "serialport": {
+            "portname": "/dev/ttyACM0",
+            "baudrate": 9600
+        }
+    }
+}

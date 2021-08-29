@@ -25,8 +25,13 @@ namespace csNMEA
         
         public SerialData(string sentence)
         {
-            string s = sentence.Substring(0, sentence.Length - 3);
-            fields = s.Split(",");
+            if (!sentence.StartsWith("$")) {
+                fields = new string[] {""};
+            }
+            else {
+                // trim the asterisk and the 2-digit checksum
+                fields = sentence.Substring(0, sentence.Length - 3).Split(",");
+            }
         }
 
         public string[] fields { get; set; }

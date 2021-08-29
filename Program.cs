@@ -66,16 +66,22 @@ namespace csNMEA
 
         private static void SerialDataReceived(SerialData data) {
             string sentenceid = "";
-            string s = "";
-            if (!data.fields[0].StartsWith("$")) {
-                return;
-            }
+            string s = data.fields[0];
+            int fl = s.Length;
 
-            if (data.fields[0].Length < 8) {
-                sentenceid = data.fields[0].Substring(3, 3);
-            }
-            else {
-                sentenceid = data.fields[0].Substring(3, 5);
+            switch (fl) {
+                case 0:  // Garbage message, get out now
+                    return;
+                case 8:  // Example: $PUBX00
+                    sentenceid = data.fields[0].Substring(3, 5);
+                    break;
+                case 7:  // Example: $PRDID
+                    sentenceid = data.fields[0].Substring(3, 4);
+                    break;
+                case 6:  // Example: $GXXX (all the rest)
+                default:  
+                    sentenceid = data.fields[0].Substring(3, 3);
+                    break;
             }
 
             if (sentenceid.Contains("APB")) {

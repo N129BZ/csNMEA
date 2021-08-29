@@ -14,6 +14,8 @@ namespace csNMEA
         {
             int baudrate = 0; 
             string port = ""; 
+            bool processUbx = false;
+
             bool hasArgs = false; // used to test for either args or csGPSconfig file
 
             if (args.Length > 0) {  
@@ -29,6 +31,9 @@ namespace csNMEA
                             port = s;
                             hasArgs = true;
                         }
+                        else if (bool.TryParse(s, out bool b)) {
+                            processUbx = b;
+                        }
                     }
                 }
             }
@@ -39,6 +44,7 @@ namespace csNMEA
                     JObject jo = JObject.Parse(File.ReadAllText("./csGPSconfig.json"));
                     port = (string)jo["csGPSconfig"]["serialport"]["portname"];
                     baudrate = (int)jo["csGPSconfig"]["serialport"]["baudrate"];
+                    processUbx = (bool)jo["csGPSconfig"]["processOptions"]["ubxMessages"];
                 }
                 catch (System.IO.FileNotFoundException) {
                     Console.WriteLine("No csGPSconfig.json file and no args! Exiting.");
@@ -49,9 +55,9 @@ namespace csNMEA
                     return;
                 }
             }
-
+            
             SerialDataCallback callback = new SerialDataCallback(SerialDataReceived);
-            SerialReader reader = new SerialReader(port, baudrate, callback);
+            SerialReader reader = new SerialReader(port, baudrate, processUbx, callback);
             Thread readerThread = new Thread(new ThreadStart(reader.Run));
 
             readerThread.Start();

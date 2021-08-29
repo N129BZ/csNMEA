@@ -3,6 +3,9 @@
         "serialport": {
             "portname": "/dev/ttyACM0",
             "baudrate": 38400
+        },
+        "processOptions": {
+            "ubxMessages": false
         }
     }
 }

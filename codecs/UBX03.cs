@@ -7,11 +7,6 @@ namespace csNMEA
     /*
      * === UBX03 - Satellite status ===
      */
-    //Object.defineProperty(exports, "__esModule", { value: true });
-    //var helpers_1 = require("../helpers");
-    //exports.sentenceId = "UBX03";
-    //exports.sentenceName = "Satellite status";
-
     public class Satellite {
         public Satellite(int sid,
                          string typ,

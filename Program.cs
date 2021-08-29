@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
-//using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
 
 
 namespace csNMEA
@@ -19,7 +17,7 @@ namespace csNMEA
             bool hasArgs = false; // used to test for either args or csGPSconfig file
 
             if (args.Length > 0) {  
-                // in Linux even if no args were passed, there will be a "csGPS" arg :/
+                // in Linux even if no args were passed, there will be a "csNMEA" arg :/
                 // so we'll iterate and check for valid arg(s)
                 foreach (string s in args) {
                     if (s.Length > 0 ) {

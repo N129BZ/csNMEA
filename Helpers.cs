@@ -314,18 +314,9 @@ namespace csNMEA
             int day = 0;
 
             if (sdate.Length == 8) {
-
                 year = int.Parse(sdate.Substring(4));
                 month = int.Parse(sdate.Substring(2, 4));
                 day = int.Parse(sdate.Substring(0, 2)); 
-
-                if (year.ToString().Length == 4) {
-
-                    // If we need to parse older GPRMC data, we should hack something like
-                    // year < 73 ? 2000+year : 1900+year
-                    // Since GPS appeared in 1973
-                    //ret.setUTCFullYear(int.Parse("20" + year), int.Parse(month), int.Parse(day));
-                }
             }
             else {
                 year = ret.Year;
@@ -357,37 +348,29 @@ namespace csNMEA
          * Parses a date in the format "yyMMdd" along with a time in the format
          * "hhmmss" or "hhmmss.ss" and returns a Date object.
          */
-        public static DateTime parseDatetime(string date, string time) {
+        public static DateTime parseDatetime(string sdate, string stime) {
             
-            if (date.Length == 0 && time.Length == 0) {
+            if (sdate.Length == 0 && stime.Length == 0) {
                 return new DateTime();
             }
  
-            int day = int.Parse(date.Substring(0, 2));
-            int month = int.Parse(date.Substring(2, 2));
-            int year = int.Parse(date.Substring(4, 2));
-            // GPRMC date doesn't specify century. GPS came out in 1973 so if the year
-            // is less than 73, assume it's 20xx, otherwise assume it is 19xx.
-            if (year < 73) {
-                year = year + 2000;
-            }
-            else {
-                year = year + 1900;
-            }
+            int day = int.Parse(sdate.Substring(0, 2));
+            int month = int.Parse(sdate.Substring(2, 2));
+            int year = int.Parse(sdate.Substring(4, 2));
 
-            if (time.Length == 0) {
-                return new DateTime(year, month - 1, day);
+            if (stime.Length == 0) {
+                return new DateTime(year, month, day);
             }
             else {
-                int hours = int.Parse(time.Substring(0, 2));
-                int minutes = int.Parse(time.Substring(2, 2));
-                int seconds = int.Parse(time.Substring(4, 2));
+                int hours = int.Parse(stime.Substring(0, 2));   // 0,1
+                int minutes = int.Parse(stime.Substring(2, 2)); // 2,3
+                int seconds = int.Parse(stime.Substring(4, 2)); // 4,5
                 int milliseconds = 0;
-                if (time.Length == 9) {
-                    milliseconds = int.Parse(time.Substring(7)) * 10;
+                if (stime.Length >= 8) {
+                    milliseconds = int.Parse(stime.Substring(7)) * 10;
                 }
 
-                return new DateTime(year, month - 1, day, hours, minutes, seconds, milliseconds).ToUniversalTime();
+                return new DateTime(year, month, day, hours, minutes, seconds, milliseconds).ToUniversalTime();
             }
         }
     }

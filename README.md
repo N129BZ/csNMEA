@@ -6,6 +6,9 @@ Both the go and js codes have been ported to C#, using the linux versions of .NE
 ###
 Hardware requirement:
     UBLOX usb gps dongle or equivalent, see https://www.ebay.com/p/21037983465 also available on Amazon.
+    (I have no affiliation with either.)
+
+
 
 ###
 Software requirements, add 3 nuget packages:

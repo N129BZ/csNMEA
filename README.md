@@ -1,5 +1,5 @@
 # csNMEA
-This is a very simplistic implementation of b3nn0's EU Stratux gps.go that configures a UBLOX usb serial device to receive NMEA sentences as configured. The received sentences are then processed through 101100's nmea-simple codecs, which then output (my addition) formatted json. 
+This is a very simplistic implementation of b3nn0's EU version of the Stratux file gps.go which sets the configurations of a UBLOX usb serial device to receive NMEA sentences as configured. The received sentences are then processed through 101100's nmea-simple codecs, which subsequently output (my addition) formatted json. 
 
 Both the go and js codes have been ported to C#, using the linux versions of .NET Core and vscode running on Ubuntu MATE 20.04. 
 

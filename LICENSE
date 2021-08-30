@@ -6,7 +6,7 @@ Stratux Configuration code is copyrighted with a BSD 3-Clause by
 Christopher Young, as noted in the header of the UbloxConfigurator.cs file.
 
 NMEA sentence parsing has multiple copyright holders under the MIT license, 
-see seperate license file in the codex subdirectory.
+see seperate license file in the codecs subdirectory.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

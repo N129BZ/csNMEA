@@ -1,22 +1,5 @@
-/*
-	Copyright (c) 2015-2016 Christopher Young
-	Distributable under the terms of The "BSD New" License
-	that can be found in the LICENSE file, herein included
-	as part of this header.
-
-	This .NET Core version was adapted from b3nn0's EU version of Christopher Young's Stratux project at:
-    
-    https://github.com/b3nn0/stratux
-
-    This C# code is an import of the UBLOX serial device initialization code from the module gps.go 
-    
-*/
-
-
-
 using System;
 using System.IO.Ports;
-using System.Diagnostics;
 
 
 namespace csNMEA

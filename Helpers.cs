@@ -174,7 +174,15 @@ namespace csNMEA
         }
 
         public static string encodeDate(DateTime date) {
-            string year = date.ToUniversalTime().Year.ToString();  
+            int yr = date.Year;
+           
+            if (yr < 73) {
+                yr += 2000;
+            }
+            else {
+                yr += 1900;
+            }
+            string year = yr.ToString(); //date.ToUniversalTime().Year.ToString();  
             string month = date.ToUniversalTime().Month.ToString();  
             string day = date.ToUniversalTime().Day.ToString();  
 
@@ -357,6 +365,13 @@ namespace csNMEA
             int day = parseIntSafe(sdate.Substring(0, 2));
             int month = parseIntSafe(sdate.Substring(2, 2));
             int year = parseIntSafe(sdate.Substring(4, 2));
+
+            if (year < 73) {
+                year += 2000;
+            }
+            else {
+                year += 1900;
+            }
 
             if (stime.Length == 0) {
                 return new DateTime(year, month, day);

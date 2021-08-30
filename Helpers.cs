@@ -312,26 +312,30 @@ namespace csNMEA
          * @returns {Date}
          */
         public static DateTime parseTime(string stime, string sdate) {
-            DateTime ret = new DateTime();
+            DateTime ret = DateTime.Now.ToUniversalTime();
             if (stime == "") {
                 return ret;
             }
-
-            int year = 0; 
-            int month = 0; 
-            int day = 0;
-
-            if (sdate.Length == 8) {
-                year = parseIntSafe(sdate.Substring(4));
-                month = parseIntSafe(sdate.Substring(2, 4));
+            
+            int day = ret.Day;
+            int month = ret.Month; 
+            int year = ret.Year;; 
+            
+            if (sdate.Length >= 8) {
                 day = parseIntSafe(sdate.Substring(0, 2)); 
+                month = parseIntSafe(sdate.Substring(2, 4));
+                year = parseIntSafe(sdate.Substring(4));
             }
-            else {
-                year = ret.Year;
-                month = ret.Month;
-                day = ret.Day;
+           
+            if (year.ToString().Length == 2) {
+                if (year < 73) {
+                    year += 2000;
+                }
+                else {
+                    year += 1900;
+                } 
             }
-
+            
             int hrs = parseIntSafe(stime.Substring(0, 2));
             int mins = parseIntSafe(stime.Substring(2, 2));
             int secs = parseIntSafe(stime.Substring(4, 2));
@@ -345,10 +349,10 @@ namespace csNMEA
             }
             
             if (sdate.Length == 0) {
-                return ret;    //(hour: hrs, minute: mins, second: secs, millisecond: ms);
+                return new DateTime(ret.Year, ret.Month, ret.Day, hrs, mins, secs, ms).ToUniversalTime();   
             }
             else {
-                return new DateTime(year, month, day, hrs, mins, secs, ms); 
+                return new DateTime(year, month, day, hrs, mins, secs, ms).ToUniversalTime(); 
             }
         }
 

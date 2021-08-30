@@ -47,7 +47,7 @@ namespace csNMEA
             sentenceName = "Active satellites and dilution of precision";
             selectionMode = fields[1] == "A" ? "automatic" : "manual";
             fixMode = ThreeDFixTypes[Helpers.parseIntSafe(fields[2])];
-            satellites = sats.ToArray();
+            satellites = sats;
             PDOP = Helpers.parseFloatSafe(fields[15]);
             HDOP = Helpers.parseFloatSafe(fields[16]);
             VDOP = Helpers.parseFloatSafe(fields[17]);
@@ -61,7 +61,7 @@ namespace csNMEA
         
         public string selectionMode { get; set; }
         public string fixMode { get; set; }
-        public string[] satellites { get; set; }
+        public List<string> satellites { get; set; }
         public float PDOP { get; set; }
         public float HDOP { get; set; }
         public float VDOP { get; set; }    

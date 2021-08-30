@@ -9,8 +9,7 @@ namespace csNMEA
         private int pid;
 
         public UBXPacket(string[] fields) {
-            fields[0] += fields[1];
-            pid = int.Parse(fields[1]);
+            pid = Helpers.parseIntSafe(fields[1]);
             switch (pid) {
                 case 0:
                     packet00 = new UBX00Packet(fields);

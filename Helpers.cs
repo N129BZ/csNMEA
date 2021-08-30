@@ -314,9 +314,9 @@ namespace csNMEA
             int day = 0;
 
             if (sdate.Length == 8) {
-                year = int.Parse(sdate.Substring(4));
-                month = int.Parse(sdate.Substring(2, 4));
-                day = int.Parse(sdate.Substring(0, 2)); 
+                year = Helpers.parseIntSafe(sdate.Substring(4));
+                month = Helpers.parseIntSafe(sdate.Substring(2, 4));
+                day = Helpers.parseIntSafe(sdate.Substring(0, 2)); 
             }
             else {
                 year = ret.Year;
@@ -324,9 +324,9 @@ namespace csNMEA
                 day = ret.Day;
             }
 
-            int hrs = int.Parse(stime.Substring(0, 2));
-            int mins = int.Parse(stime.Substring(2, 2));
-            int secs = int.Parse(stime.Substring(4, 2));
+            int hrs = Helpers.parseIntSafe(stime.Substring(0, 2));
+            int mins = Helpers.parseIntSafe(stime.Substring(2, 2));
+            int secs = Helpers.parseIntSafe(stime.Substring(4, 2));
             
             // Extract the milliseconds, since they can be not present, be 3 decimal place, or 2 decimal places, or other?
             string msStr = stime.Substring(7);
@@ -354,20 +354,20 @@ namespace csNMEA
                 return new DateTime();
             }
  
-            int day = int.Parse(sdate.Substring(0, 2));
-            int month = int.Parse(sdate.Substring(2, 2));
-            int year = int.Parse(sdate.Substring(4, 2));
+            int day = Helpers.parseIntSafe(sdate.Substring(0, 2));
+            int month = Helpers.parseIntSafe(sdate.Substring(2, 2));
+            int year = Helpers.parseIntSafe(sdate.Substring(4, 2));
 
             if (stime.Length == 0) {
                 return new DateTime(year, month, day);
             }
             else {
-                int hours = int.Parse(stime.Substring(0, 2));   // 0,1
-                int minutes = int.Parse(stime.Substring(2, 2)); // 2,3
-                int seconds = int.Parse(stime.Substring(4, 2)); // 4,5
+                int hours = Helpers.parseIntSafe(stime.Substring(0, 2));   // 0,1
+                int minutes = Helpers.parseIntSafe(stime.Substring(2, 2)); // 2,3
+                int seconds = Helpers.parseIntSafe(stime.Substring(4, 2)); // 4,5
                 int milliseconds = 0;
                 if (stime.Length >= 8) {
-                    milliseconds = int.Parse(stime.Substring(7)) * 10;
+                    milliseconds = Helpers.parseIntSafe(stime.Substring(7)) * 10;
                 }
 
                 return new DateTime(year, month, day, hours, minutes, seconds, milliseconds).ToUniversalTime();

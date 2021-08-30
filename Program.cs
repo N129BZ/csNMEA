@@ -41,10 +41,10 @@ namespace csNMEA
             // if no valid args were found, read the csGPSconfig.json file
             if (!hasArgs) {
                 try {
-                    JObject jo = JObject.Parse(File.ReadAllText("./csGPSconfig.json"));
-                    port = (string)jo["csGPSconfig"]["serialport"]["portname"];
-                    baudrate = (int)jo["csGPSconfig"]["serialport"]["baudrate"];
-                    processUbx = (bool)jo["csGPSconfig"]["processOptions"]["ubxMessages"];
+                    JObject jo = JObject.Parse(File.ReadAllText("./csNMEA.json"));
+                    port = (string)jo["csNMEA"]["serialport"]["portname"];
+                    baudrate = (int)jo["csNMEA"]["serialport"]["baudrate"];
+                    processUbx = (bool)jo["csNMEA"]["processOptions"]["ubxMessages"];
                 }
                 catch (System.IO.FileNotFoundException) {
                     Console.WriteLine("No csGPSconfig.json file and no args! Exiting.");

@@ -1,11 +1,11 @@
 {
-    "csGPSconfig": {
+    "csNMEA": {
         "serialport": {
             "portname": "/dev/ttyACM0",
-            "baudrate": 38400
+            "baudrate": 115200
         },
         "processOptions": {
-            "ubxMessages": true
+            "ubxMessages": false
         }
     }
 }

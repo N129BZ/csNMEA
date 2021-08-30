@@ -69,22 +69,22 @@ namespace csNMEA
         private string getSatelliteType(int satid) {
             string satstr = "";
             if (satid < 33) {
-                satstr = satid + " = GPS";
+                satstr = "GPS";
             }
             else if(satid < 65) { // indicates SBAS: WAAS, EGNOS, MSAS, etc.
-                satstr = satid + " = SBAS";
+                satstr = "SBAS";
             }
             else if (satid < 97) { // GLONASS
-                satstr = satid + " = GLONASS";
+                satstr = "GLONASS";
             }
             else if (satid >= 120 && satid < 162) { // indicates SBAS: WAAS, EGNOS, MSAS, etc.
-                satstr = satid + " = SBAS";
+                satstr = "SBAS";
             }
             else if (satid > 210) {
-                satstr = satid + " = GALILEO";
+                satstr = "GALILEO";
             }
             else {
-                satstr = satid + " = UNKNOWN";
+                satstr = "UNKNOWN";
             }
             return satstr;
         }

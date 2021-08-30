@@ -8,11 +8,11 @@ Hardware requirement:
     UBLOX usb gps dongle or equivalent, see https://www.ebay.com/p/21037983465 also available on Amazon.
 
 ###
-Software requirements, 3 nuget packages:
+Software requirements, add 3 nuget packages:
 
-    Newtonsoft.Json --version 13.0.1
-    System.IO.Ports --version 5.0.1
-    System.Management --version 5.0.0
+    dotnet add package Newtonsoft.Json --version 13.0.1
+    dotnet add package System.IO.Ports --version 5.0.0
+    dotnet add package System.Management --version 5.0.0
 
 ###
 

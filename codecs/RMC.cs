@@ -34,18 +34,20 @@ namespace csNMEA
     public class RMCPacket : Decoder
     {
         public RMCPacket(string[] fields) {
-            sentenceId = "RMC";
-            sentenceName = "Recommended minimum navigation information";
-            datetime = Helpers.parseDatetime(fields[9], fields[1]);
-            status = fields[2] == "A" ? "valid" : "warning";
-            latitude = Helpers.parseLatitude(fields[3], fields[4]);
-            longitude = Helpers.parseLongitude(fields[5], fields[6]);
-            speedKnots = Helpers.parseFloatSafe(fields[7]);
-            trackTrue = Helpers.parseFloatSafe(fields[8]);
-            variation = Helpers.parseFloatSafe(fields[10]);
-            variationPole = fields[11] == "E" ? "E" : fields[11] == "W" ? "W" : "";
-            faaMode = fields[12];
-            
+            try {
+                sentenceId = "RMC";
+                sentenceName = "Recommended minimum navigation information";
+                datetime = Helpers.parseDatetime(fields[9], fields[1]);
+                status = fields[2] == "A" ? "valid" : "warning";
+                latitude = Helpers.parseLatitude(fields[3], fields[4]);
+                longitude = Helpers.parseLongitude(fields[5], fields[6]);
+                speedKnots = Helpers.parseFloatSafe(fields[7]);
+                trackTrue = Helpers.parseFloatSafe(fields[8]);
+                variation = Helpers.parseFloatSafe(fields[10]);
+                variationPole = fields[11] == "E" ? "E" : fields[11] == "W" ? "W" : "";
+                faaMode = fields[12];
+            }
+            finally {}
         }
 
         public override string getJson()

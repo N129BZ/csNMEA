@@ -27,13 +27,15 @@ namespace csNMEA
     public class VHWPacket : Decoder
     {
         public VHWPacket(string[] fields) {
-            sentenceId = "VHW";
-            sentenceName = "Water speed and heading";
-            degreesTrue = Helpers.parseFloatSafe(fields[1]);
-            degreesMagnetic = Helpers.parseFloatSafe(fields[3]);
-            speedKnots = Helpers.parseFloatSafe(fields[5]);
-            speedKmph = Helpers.parseFloatSafe(fields[7]);
-               
+            try {
+                sentenceId = "VHW";
+                sentenceName = "Water speed and heading";
+                degreesTrue = Helpers.parseFloatSafe(fields[1]);
+                degreesMagnetic = Helpers.parseFloatSafe(fields[3]);
+                speedKnots = Helpers.parseFloatSafe(fields[5]);
+                speedKmph = Helpers.parseFloatSafe(fields[7]);
+            }
+            finally {}   
         }
 
         public override string getJson()

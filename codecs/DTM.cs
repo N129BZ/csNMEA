@@ -31,15 +31,17 @@ namespace csNMEA
     public class DTMPacket : Decoder
     {
         public DTMPacket(string[] fields) {
-            sentenceId = "DTM"; 
-            sentenceName = "Datum reference"; 
-            datumCode = parseDatumCode(fields[1]);
-            datumSubcode = fields[2];
-            offsetLatitude = Helpers.parseLatitude(fields[3], fields[4]);
-            offsetLongitude = Helpers.parseLongitude(fields[5], fields[6]);
-            offsetAltitudeMeters = Helpers.parseFloatSafe(fields[7]);
-            datumName = parseDatumCode(fields[8]);
-            
+            try {
+                sentenceId = "DTM"; 
+                sentenceName = "Datum reference"; 
+                datumCode = parseDatumCode(fields[1]);
+                datumSubcode = fields[2];
+                offsetLatitude = Helpers.parseLatitude(fields[3], fields[4]);
+                offsetLongitude = Helpers.parseLongitude(fields[5], fields[6]);
+                offsetAltitudeMeters = Helpers.parseFloatSafe(fields[7]);
+                datumName = parseDatumCode(fields[8]);
+            }
+            finally {}
         }
 
         public override string getJson()

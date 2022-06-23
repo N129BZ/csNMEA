@@ -29,14 +29,16 @@ namespace csNMEA
     public class GLLPacket : Decoder
     {
         public GLLPacket(string[] fields) {
-            sentenceId = "GLL";
-            sentenceName = "Geographic position - latitude and longitude";
-            latitude = Helpers.parseLatitude(fields[1], fields[2]);
-            longitude = Helpers.parseLongitude(fields[3], fields[4]);
-            time = Helpers.parseTime(fields[5], "");
-            status = fields[6] == "A" ? "valid" : "invalid";
-            faaMode = fields[7];
-            
+            try {
+                sentenceId = "GLL";
+                sentenceName = "Geographic position - latitude and longitude";
+                latitude = Helpers.parseLatitude(fields[1], fields[2]);
+                longitude = Helpers.parseLongitude(fields[3], fields[4]);
+                time = Helpers.parseTime(fields[5], "");
+                status = fields[6] == "A" ? "valid" : "invalid";
+                faaMode = fields[7];
+            }
+            finally {}
         }
         
         public override string getJson()

@@ -22,10 +22,12 @@ namespace csNMEA
          */
 
         public HDTPacket(string[] fields) {
-            sentenceId = "HDT";
-            sentenceName = "Heading - true";
-            heading = Helpers.parseFloatSafe(fields[1]);
-            
+            try {
+                sentenceId = "HDT";
+                sentenceName = "Heading - true";
+                heading = Helpers.parseFloatSafe(fields[1]);
+            }
+            finally {}
         }
         
         public override string getJson()

@@ -24,14 +24,16 @@ namespace csNMEA
     public class HDGPacket : Decoder
     {
         public HDGPacket(string[] fields) {
-            sentenceId = "HDG";
-            sentenceName = "Heading - deviation and variation";
-            heading = Helpers.parseFloatSafe(fields[1]);
-            deviation = Helpers.parseFloatSafe(fields[2]);
-            deviationDirection = fields[3] == "E" ? "E" : fields[3] == "W" ? "W" : "";
-            variation = Helpers.parseFloatSafe(fields[4]);
-            variationDirection = fields[5] == "E" ? "E" : fields[5] == "W" ? "W" : "";
-            
+            try {
+                sentenceId = "HDG";
+                sentenceName = "Heading - deviation and variation";
+                heading = Helpers.parseFloatSafe(fields[1]);
+                deviation = Helpers.parseFloatSafe(fields[2]);
+                deviationDirection = fields[3] == "E" ? "E" : fields[3] == "W" ? "W" : "";
+                variation = Helpers.parseFloatSafe(fields[4]);
+                variationDirection = fields[5] == "E" ? "E" : fields[5] == "W" ? "W" : "";
+            }
+            finally {}
         }
 
         public override string getJson()

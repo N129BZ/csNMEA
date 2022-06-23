@@ -32,17 +32,19 @@ namespace csNMEA
     public class BWCPacket : Decoder
     { 
         public BWCPacket(string[] fields) {
-            sentenceId = "BWC";
-            sentenceName = "Bearing and distance to waypoint - great circle";
-            time = Helpers.parseTime(fields[1], "");
-            bearingLatitude = Helpers.parseLatitude(fields[2], fields[3]);
-            bearingLongitude = Helpers.parseLongitude(fields[4], fields[5]);
-            bearingTrue = Helpers.parseFloatSafe(fields[6]);
-            bearingMagnetic = Helpers.parseFloatSafe(fields[8]);
-            distanceNm = Helpers.parseFloatSafe(fields[10]);
-            waypointId = fields[12];
-            faaMode = fields[13];
-            
+            try {
+                sentenceId = "BWC";
+                sentenceName = "Bearing and distance to waypoint - great circle";
+                time = Helpers.parseTime(fields[1], "");
+                bearingLatitude = Helpers.parseLatitude(fields[2], fields[3]);
+                bearingLongitude = Helpers.parseLongitude(fields[4], fields[5]);
+                bearingTrue = Helpers.parseFloatSafe(fields[6]);
+                bearingMagnetic = Helpers.parseFloatSafe(fields[8]);
+                distanceNm = Helpers.parseFloatSafe(fields[10]);
+                waypointId = fields[12];
+                faaMode = fields[13];
+            }
+            finally {}
         }
 
         public override string getJson()

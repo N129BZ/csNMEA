@@ -22,12 +22,14 @@ namespace csNMEA
     public class RDIDPacket : Decoder
     {
         public RDIDPacket(string[] fields) {
-            sentenceId = "RDID";
-            sentenceName = "RDI proprietary heading, pitch, and roll";
-            roll = Helpers.parseFloatSafe(fields[1]);
-            pitch = Helpers.parseFloatSafe(fields[2]);
-            heading = Helpers.parseFloatSafe(fields[3]);
-            
+            try {
+                sentenceId = "RDID";
+                sentenceName = "RDI proprietary heading, pitch, and roll";
+                roll = Helpers.parseFloatSafe(fields[1]);
+                pitch = Helpers.parseFloatSafe(fields[2]);
+                heading = Helpers.parseFloatSafe(fields[3]);
+            }
+            finally {}
         }
 
         public override string getJson()

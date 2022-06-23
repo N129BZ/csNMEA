@@ -40,22 +40,25 @@ namespace csNMEA
     public class APBPacket : Decoder
     {
         public APBPacket(string[] fields) {
-            sentenceId = "APB";
-            sentenceName = "Autopilot sentence \"B\"";
-            status1 =  fields[1];
-            status2 =  fields[2];
-            xteMagn = Helpers.parseFloatSafe(fields[3]);
-            steerDir = fields[4];
-            xteUnit = fields[5];
-            arrivalCircleStatus = fields[6];
-            arrivalPerpendicularStatus = fields[7];
-            bearingOrig2Dest = Helpers.parseFloatSafe(fields[8]);
-            bearingOrig2DestType = fields[9];
-            waypoint = fields[10];
-            bearing2Dest = Helpers.parseFloatSafe(fields[11]);
-            bearingDestType = fields[12];
-            heading2steer = Helpers.parseFloatSafe(fields[13]);
-            headingDestType = fields[14];
+            try {
+                sentenceId = "APB";
+                sentenceName = "Autopilot sentence \"B\"";
+                status1 =  fields[1];
+                status2 =  fields[2];
+                xteMagn = Helpers.parseFloatSafe(fields[3]);
+                steerDir = fields[4];
+                xteUnit = fields[5];
+                arrivalCircleStatus = fields[6];
+                arrivalPerpendicularStatus = fields[7];
+                bearingOrig2Dest = Helpers.parseFloatSafe(fields[8]);
+                bearingOrig2DestType = fields[9];
+                waypoint = fields[10];
+                bearing2Dest = Helpers.parseFloatSafe(fields[11]);
+                bearingDestType = fields[12];
+                heading2steer = Helpers.parseFloatSafe(fields[13]);
+                headingDestType = fields[14];
+            }
+            finally {}
         }
 
         public override string getJson()

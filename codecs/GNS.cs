@@ -42,19 +42,21 @@ namespace csNMEA
     public class GNSPacket : Decoder
     {
         public GNSPacket(string[] fields) {
-            sentenceId = "GNS";
-            sentenceName = "GNSS fix data";
-            time =  Helpers.parseTime(fields[1], "");
-            latitude =  Helpers.parseLatitude(fields[2], fields[3]);
-            longitude =  Helpers.parseLongitude(fields[4], fields[5]);
-            modeIndicator = fields[6];
-            satellitesInView =  Helpers.parseIntSafe(fields[7]);
-            horizontalDilution =  Helpers.parseFloatSafe(fields[8]);
-            altitudeMeters =  Helpers.parseFloatSafe(fields[9]);
-            geoidalSeperation =  Helpers.parseFloatSafe(fields[10]);
-            differentialAge =  Helpers.parseFloatSafe(fields[11]);
-            differentialRefStn = fields[12];
-            
+            try {
+                sentenceId = "GNS";
+                sentenceName = "GNSS fix data";
+                time =  Helpers.parseTime(fields[1], "");
+                latitude =  Helpers.parseLatitude(fields[2], fields[3]);
+                longitude =  Helpers.parseLongitude(fields[4], fields[5]);
+                modeIndicator = fields[6];
+                satellitesInView =  Helpers.parseIntSafe(fields[7]);
+                horizontalDilution =  Helpers.parseFloatSafe(fields[8]);
+                altitudeMeters =  Helpers.parseFloatSafe(fields[9]);
+                geoidalSeperation =  Helpers.parseFloatSafe(fields[10]);
+                differentialAge =  Helpers.parseFloatSafe(fields[11]);
+                differentialRefStn = fields[12];
+            }
+            finally {}
         }
 
         public override string getJson()

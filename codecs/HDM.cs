@@ -21,10 +21,12 @@ namespace csNMEA
     public class HDMPacket : Decoder
     {
         public HDMPacket(string[] fields) {
-            sentenceId = "HDM";
-            sentenceName = "Heading - magnetic";
-            heading = Helpers.parseFloatSafe(fields[1]);    
-                
+            try {
+                sentenceId = "HDM";
+                sentenceName = "Heading - magnetic";
+                heading = Helpers.parseFloatSafe(fields[1]);    
+            }
+            finally {}    
         }
 
         public override string getJson()

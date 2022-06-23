@@ -27,17 +27,19 @@ namespace csNMEA
     public class GSTPacket : Decoder
     {
         public GSTPacket(string[] fields) {
-            sentenceId = "GST";
-            sentenceName = "GPS pseudorange noise statistics";
-            time = Helpers.parseTime(fields[1], "");
-            totalRms = Helpers.parseFloatSafe(fields[2]);
-            semiMajorError = Helpers.parseFloatSafe(fields[3]);
-            semiMinorError = Helpers.parseFloatSafe(fields[4]);
-            orientationOfSemiMajorError = Helpers.parseFloatSafe(fields[5]);
-            latitudeError = Helpers.parseFloatSafe(fields[6]);
-            longitudeError = Helpers.parseFloatSafe(fields[7]);
-            altitudeError = Helpers.parseFloatSafe(fields[8]);
-            
+            try {
+                sentenceId = "GST";
+                sentenceName = "GPS pseudorange noise statistics";
+                time = Helpers.parseTime(fields[1], "");
+                totalRms = Helpers.parseFloatSafe(fields[2]);
+                semiMajorError = Helpers.parseFloatSafe(fields[3]);
+                semiMinorError = Helpers.parseFloatSafe(fields[4]);
+                orientationOfSemiMajorError = Helpers.parseFloatSafe(fields[5]);
+                latitudeError = Helpers.parseFloatSafe(fields[6]);
+                longitudeError = Helpers.parseFloatSafe(fields[7]);
+                altitudeError = Helpers.parseFloatSafe(fields[8]);
+            }
+            finally {}
         }
         
         public override string getJson()

@@ -27,16 +27,18 @@ namespace csNMEA
     public class UBX04Packet : Decoder
     {
         public UBX04Packet(string[] fields) {
-            sentenceId = "UBX04";
-            sentenceName = "Time of day and clock information";
-            utcDateTime = Helpers.parseDatetime(fields[3], fields[2]);
-            utcTow = Helpers.parseIntSafe(fields[4]);
-            utcWeek = Helpers.parseIntSafe(fields[5]);
-            leapSec = Helpers.parseIntSafe(fields[6]);
-            clkBias = Helpers.parseIntSafe(fields[7]);
-            clkDrift = Helpers.parseIntSafe(fields[8]);
-            tpGranularity = Helpers.parseIntSafe(fields[9]);
-            
+            try {
+                sentenceId = "UBX04";
+                sentenceName = "Time of day and clock information";
+                utcDateTime = Helpers.parseDatetime(fields[3], fields[2]);
+                utcTow = Helpers.parseIntSafe(fields[4]);
+                utcWeek = Helpers.parseIntSafe(fields[5]);
+                leapSec = Helpers.parseIntSafe(fields[6]);
+                clkBias = Helpers.parseIntSafe(fields[7]);
+                clkDrift = Helpers.parseIntSafe(fields[8]);
+                tpGranularity = Helpers.parseIntSafe(fields[9]);
+            }
+            finally {}
         }
 
         public override string getJson()

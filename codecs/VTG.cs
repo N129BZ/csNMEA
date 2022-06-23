@@ -7,7 +7,8 @@ namespace csNMEA
     /*
      * === VTG - Track made good and ground speed ===
      *
-     * ------------------------------------------------------------------------------
+     * ------------------------------------------------------------------------
+		     x[7]: 230394       Date - 23rd of March 1994------
      *        1     2 3     4 5   6 7   8 9  10
      *        |     | |     | |   | |   | |  |
      * $--VTG,xxx.x,T,xxx.x,M,x.x,N,x.x,K,m,*hh<CR><LF>
@@ -29,14 +30,16 @@ namespace csNMEA
     public class VTGPacket : Decoder
     {
         public VTGPacket(string[] fields) {
-            sentenceId = "VTG";
-            sentenceName = "Track made good and ground speed";
-            trackTrue = Helpers.parseFloatSafe(fields[1]);
-            trackMagnetic = Helpers.parseFloatSafe(fields[3]);
-            speedKnots = Helpers.parseFloatSafe(fields[5]);
-            speedKmph = Helpers.parseFloatSafe(fields[7]);
-            faaMode = fields[9];
-            
+            try {
+                sentenceId = "VTG";
+                sentenceName = "Track made good and ground speed";
+                trackTrue = Helpers.parseFloatSafe(fields[1]);
+                trackMagnetic = Helpers.parseFloatSafe(fields[3]);
+                speedKnots = Helpers.parseFloatSafe(fields[5]);
+                speedKmph = Helpers.parseFloatSafe(fields[7]);
+                faaMode = fields[9];
+            }
+            finally {}   
         }
 
         public override string getJson()

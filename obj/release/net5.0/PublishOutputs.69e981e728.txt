@@ -1,0 +1,17 @@
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/csNMEA
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/csNMEA.dll
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/csNMEA.deps.json
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/csNMEA.runtimeconfig.json
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/csNMEA.pdb
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/Newtonsoft.Json.dll
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/System.CodeDom.dll
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/System.IO.Ports.dll
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/System.Management.dll
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/runtimes/linux-arm/native/libSystem.IO.Ports.Native.so
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/runtimes/linux-arm64/native/libSystem.IO.Ports.Native.so
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/runtimes/linux-x64/native/libSystem.IO.Ports.Native.so
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/runtimes/osx-x64/native/libSystem.IO.Ports.Native.dylib
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/runtimes/linux/lib/netstandard2.0/System.IO.Ports.dll
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/runtimes/osx/lib/netstandard2.0/System.IO.Ports.dll
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/runtimes/win/lib/netstandard2.0/System.IO.Ports.dll
+/home/bro/Programming/csNMEA/bin/release/net5.0/publish/runtimes/win/lib/netcoreapp2.0/System.Management.dll

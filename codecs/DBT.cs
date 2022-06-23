@@ -24,13 +24,14 @@ namespace csNMEA
     public class DBTPacket : Decoder
     {
         public DBTPacket(string[] fields) {
-
-            sentenceId = "DBT";
-            sentenceName = "Depth below transducer";
-            depthFeet = Helpers.parseFloatSafe(fields[1]);
-            depthMeters = Helpers.parseFloatSafe(fields[3]);
-            depthFathoms = Helpers.parseFloatSafe(fields[5]);
-            
+            try {
+                sentenceId = "DBT";
+                sentenceName = "Depth below transducer";
+                depthFeet = Helpers.parseFloatSafe(fields[1]);
+                depthMeters = Helpers.parseFloatSafe(fields[3]);
+                depthFathoms = Helpers.parseFloatSafe(fields[5]);
+            }
+            finally {}
         }
 
         public override string getJson()

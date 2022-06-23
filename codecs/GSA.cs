@@ -37,21 +37,23 @@ namespace csNMEA
         string[] ThreeDFixTypes = new string[] { "unknown", "none", "2D", "3D" };
 
         public GSAPacket(string[] fields) {
-            List<string> sats = new List<string>();
-            for (int i = 3; i < 15; i++) {
-                if (fields[i].Length > 0) {
-                    sats.Add(fields[i]);
+            try {
+                List<string> sats = new List<string>();
+                for (int i = 3; i < 15; i++) {
+                    if (fields[i].Length > 0) {
+                        sats.Add(fields[i]);
+                    }
                 }
+                sentenceId = "GSA";
+                sentenceName = "Active satellites and dilution of precision";
+                selectionMode = fields[1] == "A" ? "automatic" : "manual";
+                fixMode = ThreeDFixTypes[Helpers.parseIntSafe(fields[2])];
+                satellites = sats;
+                PDOP = Helpers.parseFloatSafe(fields[15]);
+                HDOP = Helpers.parseFloatSafe(fields[16]);
+                VDOP = Helpers.parseFloatSafe(fields[17]);
             }
-            sentenceId = "GSA";
-            sentenceName = "Active satellites and dilution of precision";
-            selectionMode = fields[1] == "A" ? "automatic" : "manual";
-            fixMode = ThreeDFixTypes[Helpers.parseIntSafe(fields[2])];
-            satellites = sats;
-            PDOP = Helpers.parseFloatSafe(fields[15]);
-            HDOP = Helpers.parseFloatSafe(fields[16]);
-            VDOP = Helpers.parseFloatSafe(fields[17]);
-            
+            finally {}
         }
 
         public override string getJson()

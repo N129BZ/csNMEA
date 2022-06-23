@@ -22,11 +22,13 @@ namespace csNMEA
     public class MTKPacket : Decoder
     {
         public MTKPacket(string[] fields) {
-            sentenceId = "MTK";
-            sentenceName = "Configuration packet";
-            packetType = Helpers.parseIntSafe(fields[0].Substring(3));
-            //data = fields.Take(1).Select(Helpers.parseNumberOrString().ToArray());
-            
+            try {
+                sentenceId = "MTK";
+                sentenceName = "Configuration packet";
+                packetType = Helpers.parseIntSafe(fields[0].Substring(3));
+                //data = fields.Take(1).Select(Helpers.parseNumberOrString().ToArray());
+            }
+            finally {}            
         }
 
         public override string getJson()

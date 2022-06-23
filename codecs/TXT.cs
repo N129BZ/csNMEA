@@ -24,13 +24,15 @@ namespace csNMEA
     public class TXTPacket : Decoder
     {
         public TXTPacket(string[] fields) {
-            sentenceId = "TXT";
-            sentenceName = "Human readable text information for display purposes";
-            numberOfSentences = Helpers.parseIntSafe(fields[1]);
-            sentenceNumber = Helpers.parseIntSafe(fields[2]);
-            textId = Helpers.parseIntSafe(fields[3]);
-            textInformation = fields[4];
-            
+            try {
+                sentenceId = "TXT";
+                sentenceName = "Human readable text information for display purposes";
+                numberOfSentences = Helpers.parseIntSafe(fields[1]);
+                sentenceNumber = Helpers.parseIntSafe(fields[2]);
+                textId = Helpers.parseIntSafe(fields[3]);
+                textInformation = fields[4];
+            }
+            finally {}
         }
 
         public override string getJson()

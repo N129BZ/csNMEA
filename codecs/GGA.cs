@@ -46,19 +46,21 @@ namespace csNMEA
         string[] FixTypes = new string[] { "none", "fix", "delta", "pps", "rtk", "frtk", "estimated", "manual", "simulation" };
         
         public GGAPacket(string[] fields) {
-            sentenceId = "GGA";;
-            sentenceName = "Global positioning system fix data";
-            time = Helpers.parseTime(fields[1], "");
-            latitude = Helpers.parseLatitude(fields[2], fields[3]);
-            longitude = Helpers.parseLongitude(fields[4], fields[5]);
-            fixType = FixTypes[Helpers.parseIntSafe(fields[6])];
-            satellitesInView = Helpers.parseIntSafe(fields[7]);
-            horizontalDilution = Helpers.parseFloatSafe(fields[8]);
-            altitudeMeters = Helpers.parseFloatSafe(fields[9]);
-            geoidalSeperation = Helpers.parseFloatSafe(fields[11]);
-            differentialAge = Helpers.parseFloatSafe(fields[13]);
-            differentialRefStn = fields[14];
-            
+            try {
+                sentenceId = "GGA";;
+                sentenceName = "Global positioning system fix data";
+                time = Helpers.parseTime(fields[1], "");
+                latitude = Helpers.parseLatitude(fields[2], fields[3]);
+                longitude = Helpers.parseLongitude(fields[4], fields[5]);
+                fixType = FixTypes[Helpers.parseIntSafe(fields[6])];
+                satellitesInView = Helpers.parseIntSafe(fields[7]);
+                horizontalDilution = Helpers.parseFloatSafe(fields[8]);
+                altitudeMeters = Helpers.parseFloatSafe(fields[9]);
+                geoidalSeperation = Helpers.parseFloatSafe(fields[11]);
+                differentialAge = Helpers.parseFloatSafe(fields[13]);
+                differentialRefStn = fields[14];
+            }
+            finally {}
         }
 
         public override string getJson()

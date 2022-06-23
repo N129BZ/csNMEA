@@ -5,7 +5,7 @@
             "baudrate": 115200
         },
         "processOptions": {
-            "ubxMessages": false
+            "ubxMessages": true
         }
     }
 }

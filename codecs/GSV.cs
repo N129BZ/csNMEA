@@ -61,25 +61,27 @@ namespace csNMEA
     public class GSVPacket : Decoder
     {
         public GSVPacket(string[] fields) {
-            sentenceId = "GSV";
-            sentenceName = "Satellites in view";
-            int numRecords = (fields.Length - 4) / 4;
-            List<GSVSatellite> sats = new List<GSVSatellite>();
+            try {
+                sentenceId = "GSV";
+                sentenceName = "Satellites in view";
+                int numRecords = (fields.Length - 4) / 4;
+                List<GSVSatellite> sats = new List<GSVSatellite>();
 
-            for (int i = 0; i < numRecords; i++) {
-                int offset = i * 4 + 4;
-                sats.Add(new GSVSatellite(Helpers.parseIntSafe(fields[offset]),
-                                          Helpers.parseIntSafe(fields[offset + 1]),
-                                          Helpers.parseIntSafe(fields[offset + 2]),
-                                          Helpers.parseIntSafe(fields[offset + 3])));
-             
+                for (int i = 0; i < numRecords; i++) {
+                    int offset = i * 4 + 4;
+                    sats.Add(new GSVSatellite(Helpers.parseIntSafe(fields[offset]),
+                                            Helpers.parseIntSafe(fields[offset + 1]),
+                                            Helpers.parseIntSafe(fields[offset + 2]),
+                                            Helpers.parseIntSafe(fields[offset + 3])));
+                
+                }
+                
+                numberOfMessages = Helpers.parseIntSafe(fields[1]);
+                messageNumber = Helpers.parseIntSafe(fields[2]);
+                satellitesInView = Helpers.parseIntSafe(fields[3]);
+                satellites = sats;
             }
-            
-            numberOfMessages = Helpers.parseIntSafe(fields[1]);
-            messageNumber = Helpers.parseIntSafe(fields[2]);
-            satellitesInView = Helpers.parseIntSafe(fields[3]);
-            satellites = sats;
-            
+            finally {}
         }
 
         public override string getJson()

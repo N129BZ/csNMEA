@@ -25,12 +25,14 @@ namespace csNMEA
     public class ZDAPacket : Decoder
     {
         public ZDAPacket(string[] fields) {
-            sentenceId = "ZDA";
-            sentenceName = "UTC, day, month, year, and local time zone";
-            datetime = Helpers.parseTime(fields[1], ""); //fields.Skip(2).Take(5));
-            localZoneHours = Helpers.parseIntSafe(fields[5]);
-            localZoneMinutes = Helpers.parseIntSafe(fields[6]);
-            
+            try {
+                sentenceId = "ZDA";
+                sentenceName = "UTC, day, month, year, and local time zone";
+                datetime = Helpers.parseTime(fields[1], ""); //fields.Skip(2).Take(5));
+                localZoneHours = Helpers.parseIntSafe(fields[5]);
+                localZoneMinutes = Helpers.parseIntSafe(fields[6]);
+            }
+            finally {}
         }
 
         public override string getJson()

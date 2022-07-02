@@ -57,17 +57,44 @@ namespace csNMEA
                     return;
                 } 
 
-                // loop right here until the port is open
-                while (!serialPort.IsOpen) { }
-                Console.WriteLine("Port " + deviceSerialPort + " opened at " + baudRate + " baud");
-                
+                // loop right here until the port is openvar
                 // this will write the desired configuration to the UBLOX device
                 using (UbloxConfigurator cfg = new UbloxConfigurator(serialPort, processUbx)){
                     cfg.WriteConfig();
                 }
 
+                var hnratt = new HNRATT();
+                var hnrpvt = new HNRPVT();
+
                 while (running) {
-                    callback?.Invoke(new SerialData(serialPort.ReadLine()));
+                    var header = new byte[2];
+                    serialPort.Read(header, 0, 2);
+                    if (header[0] == 0x24 && header[1] == 0x47) {  // "$G" is a GPS message
+                        var line = serialPort.ReadLine();
+                        string msg = "$G" + line;
+                        //callback?.Invoke(new SerialData(msg));
+                    }
+                    else if (header[0] == 0xB5 && header[1] == 0x62) {  // UBX HNR message
+                        var clsmid = new byte[2];
+                        var mlen = new byte[2];
+                        var chksum = new byte[2];
+                        
+                        serialPort.Read(clsmid, 0, 2);
+                        serialPort.Read(mlen, 0, 2);
+                        
+                        var len = BitConverter.ToInt16(mlen, 0);
+                        var msgdata = new byte[len];
+                        serialPort.Read(msgdata, 0, len);
+                        serialPort.Read(chksum, 0, 2);
+                        
+                        // now check class id and message id
+                        if (clsmid[0] == 0x28 && clsmid[1] == 0x01) {
+                            hnratt.Write(msgdata);
+                        }
+                        else if (clsmid[0] == 0x28 && clsmid[1] == 0x00) {
+                            //hnrpvt.Write(msgdata);
+                        }
+                    }
                 }
             }
         }

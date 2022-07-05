@@ -1,40 +1,72 @@
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace csNMEA {
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    struct tHNRATT {
+        [MarshalAs(UnmanagedType.U4)]
+        public UInt32 iTOW;
+
+        [MarshalAs(UnmanagedType.I1)]
+        public byte version;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst=3)]
+        public byte[] reserved;
+
+        [MarshalAs(UnmanagedType.I4)]
+        public Int32 roll;
+
+        [MarshalAs(UnmanagedType.I4)]
+        public Int32 pitch;
+
+        [MarshalAs(UnmanagedType.I4)]
+        public Int32 heading;
+
+        [MarshalAs(UnmanagedType.U4)]
+        public UInt32 accRoll;
+
+        [MarshalAs(UnmanagedType.U4)]
+        public UInt32 accPitch;
+
+        [MarshalAs(UnmanagedType.U4)]
+        public UInt32 accHeading;
+    }
 
     public class HNRATT {
 
         private StreamWriter sw;
-        
-        public HNRATT() {
+        private bool createFile = false;
+
+        public HNRATT(bool createfile) {
             var unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             var fpath = "/home/bro/Programming/UBX-ATT_" + unixTimestamp.ToString() + ".csv";
-            sw = new System.IO.StreamWriter(new System.IO.FileStream(fpath, FileMode.OpenOrCreate));
-            sw.WriteLine("Roll,Pitch,Heading");
-        }
-
-        ~HNRATT() {
-            sw.Close();
+            createFile = createfile;
+            if (createfile) {
+                sw = new System.IO.StreamWriter(new System.IO.FileStream(fpath, FileMode.OpenOrCreate));
+                sw.WriteLine("roll,pitch,heading,accRoll,accPitch,accHeading");
+            }
         }
 
         public void Write(byte[] fielddata) {
             
-            byte[] broll = new byte[4];
-            byte[] bpitch = new byte[4];
-            byte[] bheading = new byte[4];
+            var handle = GCHandle.Alloc(fielddata, GCHandleType.Pinned);
+            tHNRATT tatt = (tHNRATT)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(tHNRATT));
+
+            var r = (tatt.roll * .00001).ToString("0.##");
+            var p = (tatt.pitch * .00001).ToString("0.##"); 
+            var h = (tatt.heading * .00001).ToString("0.##");
             
-            Array.Copy(fielddata, 8, broll, 0, 4); 
-            Array.Copy(fielddata, 12, bpitch, 0, 4); 
-            Array.Copy(fielddata, 16, bheading, 0, 4); 
-            
-            var roll = ((BitConverter.ToInt32(broll)) * .00001).ToString("0.##");
-            var pitch = ((BitConverter.ToInt32(bpitch)) * .00001).ToString("0.##"); 
-            var heading = ((BitConverter.ToInt32(bheading)) * .00001).ToString("0.##");
-            
-            var line = roll + "," + pitch + "," + heading;
-            sw.WriteLine(line);
-            Console.WriteLine("Roll: {0} Pitch: {1} Heading: {2}", roll, pitch, heading);
+            var ra = (tatt.accRoll * .00001).ToString("0.##");
+            var pa = (tatt.accPitch * .00001).ToString("0.##"); 
+            var ha = (tatt.accHeading * .00001).ToString("0.##");
+
+            if (createFile) {
+                sw.WriteLine($"{r},{p},{h},{ra},{pa},{ha}");
+                sw.Flush();
+            }
+            Console.WriteLine($"HNR-ATT - Roll|Accuracy: {r}|{ra} Pitch|Accuracy: {p}|{pa} Heading|Accuracy: {h}|{ha}");
         }
     }
 }

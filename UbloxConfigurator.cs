@@ -13,24 +13,13 @@
 */
 
 using System;
-using System.Diagnostics;
 using System.IO.Ports;
 
 namespace csNMEA
 {
-    public class UBLOX_PIDS 
-    {
-        public const string UBLOX_5 = "u-blox 5";
-        public const string UBLOX_6 = "u-blox 6";
-        public const string UBLOX_7 = "u-blox 7";
-        public const string UBLOX_8 = "u-blox 8";
-        public const string UBLOX_9 = "u-blox 9";
-        public const string UBLOX_NONE = "none";
-    }
-
     public class UbloxConfigurator : IDisposable
     {
-        private string UBLOX_PID = UBLOX_PIDS.UBLOX_NONE;
+        private string UBLOX_PID = UBlox.UBLOX_NONE;
         private bool processUbx = false;
         private SerialPort serialPort;
         private bool disposedValue;
@@ -42,17 +31,17 @@ namespace csNMEA
 
         public void WriteConfig() {
 
-            getUbloxVersion();
+            UBLOX_PID = UBlox.GetUbloxVersion();
             
             switch (UBLOX_PID) {
-                case UBLOX_PIDS.UBLOX_6:
-                case UBLOX_PIDS.UBLOX_7:
+                case UBlox.UBLOX_6:
+                case UBlox.UBLOX_7:
                     writeUblox7ConfigCommands();
                     break;
-                case UBLOX_PIDS.UBLOX_8:
+                case UBlox.UBLOX_8:
                     writeUblox8ConfigCommands();
                     break;
-                case UBLOX_PIDS.UBLOX_9:
+                case UBlox.UBLOX_9:
                     writeUblox9ConfigCommands();
                     break;
                 default:
@@ -60,43 +49,6 @@ namespace csNMEA
             }
             
             writeUbloxGenericConfigCommands(10);
-        }
-
-        private void getUbloxVersion() {
-            /*##################################################################
-              This method is a Linux specific KLUDGE. NET Core doesn't have 
-              any good way of iterating the port device data to get a valid PID,
-              so this just uses redirecting the console standard output and parsing 
-              the results of a lsusb command. 
-             ####################################################################*/
-
-            var process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.UseShellExecute = false;
-            startInfo.FileName = "/usr/bin/lsusb";
-            startInfo.RedirectStandardOutput = true;
-            process.StartInfo = startInfo;
-            process.Start();
-            string strOutput = process.StandardOutput.ReadToEnd();
-            string[] list = strOutput.Split(Environment.NewLine);
-            foreach(string s in list) {
-                if (s.Contains(UBLOX_PIDS.UBLOX_6)) {
-                    UBLOX_PID = UBLOX_PIDS.UBLOX_6;
-                }
-                else if (s.Contains(UBLOX_PIDS.UBLOX_7)) {
-                    UBLOX_PID = UBLOX_PIDS.UBLOX_7;
-                } 
-                else if (s.Contains(UBLOX_PIDS.UBLOX_8)) {
-                    UBLOX_PID = UBLOX_PIDS.UBLOX_8;
-                }
-                else if (s.Contains(UBLOX_PIDS.UBLOX_9)) {
-                    UBLOX_PID = UBLOX_PIDS.UBLOX_9;
-                }
-            }
-            
-            if (UBLOX_PID != UBLOX_PIDS.UBLOX_NONE) {
-                Console.WriteLine($"{UBLOX_PID} detected.");
-            }
         }
         
         private void writeUbloxGenericConfigCommands(int navrate) {
@@ -121,13 +73,24 @@ namespace csNMEA
         	serialPortWrite(makeUBXCFG(0x06, 0x86, 8, new byte[]{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));   // Full Power Mode
         	// serialPortWrite(makeUBXCFG(0x06, 0x86, 8, new byte[]{0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})) // Balanced Power Mode
 
-        	// UBX-CFG-NAV5                           |mask1...|  dyn
-        	serialPortWrite(makeUBXCFG(0x06, 0x24, 36, new byte[]{0x01, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+        	// UBX-CFG-NAV5 
+            // Dynamic platform model: airborne with <2g acceleration
+           	serialPortWrite(makeUBXCFG(0x06, 0x24, 36, new byte[]{0x01, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
                                                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
-                                                                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})); // Dynamic platform model: airborne with <2g acceleration
+                                                                  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00})); 
 
         	// UBX-CFG-SBAS (disable integrity, enable auto-scan)
         	serialPortWrite(makeUBXCFG(0x06, 0x16, 8, new byte[]{0x01, 0x03, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00}));
+
+            // UBX-CFG-HNR set to 30hz
+            serialPortWrite(makeUBXCFG(0x06, 0x5C, 4, new byte[] {0x1E, 0x00, 0x00, 0x00}));
+
+            //UBX-CFG-MSG setup UBX-HNR-ATT and UBX-HNR-PVT messages
+            //                                                    CLASS  ID  MSGRATE (ON CURRENT PORT)  
+            //                                                    ------------------------------------------------- 
+            serialPortWrite(makeUBXCFG(0x06, 0x01, 3, new byte[] {0x28, 0x00, 0x01})); // HNR-PVT
+            serialPortWrite(makeUBXCFG(0x06, 0x01, 3, new byte[] {0x28, 0x01, 0x01})); // HNR-ATT
+            serialPortWrite(makeUBXCFG(0x06, 0x01, 3, new byte[] {0x10, 0x15, 0x01})); // ESF-INT
 
             // UBX-CFG-MSG (NMEA Standard Messages)  msg   msg   Ports 1-6 (every 10th message over UART1, every message over USB)
         	serialPortWrite(makeUBXCFG(0x06, 0x01, 8, new byte[] {0xF0, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00})); // GGA - Global positioning system fix data

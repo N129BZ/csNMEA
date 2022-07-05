@@ -3,10 +3,11 @@ using System.IO;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
-
 namespace csNMEA
 {  
     public delegate void SerialDataCallback(SerialData data);
+
+    
 
     class Program 
     {
@@ -15,6 +16,7 @@ namespace csNMEA
             int baudrate = 0; 
             string port = ""; 
             bool processUbx = false;
+            bool createCSVfiles = false;
 
             bool hasArgs = false; // used to test for either args or csGPSconfig file
 
@@ -37,7 +39,7 @@ namespace csNMEA
                     }
                 }
             }
-
+            
             // if no valid args were found, read the csGPSconfig.json file
             if (!hasArgs) {
                 try {
@@ -45,6 +47,7 @@ namespace csNMEA
                     port = (string)jo["csNMEA"]["serialport"]["portname"];
                     baudrate = (int)jo["csNMEA"]["serialport"]["baudrate"];
                     processUbx = (bool)jo["csNMEA"]["processOptions"]["ubxMessages"];
+                    createCSVfiles = (bool)jo["csNMEA"]["processOptions"]["createCSVfiles"];
                 }
                 catch (System.IO.FileNotFoundException) {
                     Console.WriteLine("No csGPSconfig.json file and no args! Exiting.");
@@ -57,7 +60,7 @@ namespace csNMEA
             }
             
             SerialDataCallback callback = new SerialDataCallback(SerialDataReceived);
-            SerialReader reader = new SerialReader(port, baudrate, processUbx, callback);
+            SerialReader reader = new SerialReader(port, baudrate, processUbx, createCSVfiles, callback);
             Thread readerThread = new Thread(new ThreadStart(reader.Run));
 
             readerThread.Start();

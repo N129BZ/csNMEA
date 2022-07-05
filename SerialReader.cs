@@ -1,6 +1,6 @@
 using System;
 using System.IO.Ports;
-
+using System.Text;
 
 namespace csNMEA
 {
@@ -10,15 +10,17 @@ namespace csNMEA
         private int readTimeout = 5000;
         private bool running = false;
         private bool processUbx = false;
-        
+        private bool createCSVfiles = false;
+
         private SerialDataCallback callback;
         
         // c'tor
-        public SerialReader(string port, int baudrate, bool processUbxMessages, SerialDataCallback sdcallback) {
+        public SerialReader(string port, int baudrate, bool processUbxMessages, bool createfiles, SerialDataCallback sdcallback) {
             deviceSerialPort = port;
             baudRate = baudrate;
             callback = sdcallback;
             processUbx = processUbxMessages;
+            createCSVfiles = createfiles;
         }
         
         public void Stop() {
@@ -63,36 +65,48 @@ namespace csNMEA
                     cfg.WriteConfig();
                 }
 
-                var hnratt = new HNRATT();
-                var hnrpvt = new HNRPVT();
+                var hnratt = new HNRATT(createCSVfiles);
+                var hnrpvt = new HNRPVT(createCSVfiles);
+                ESFINS esf = new ESFINS(createCSVfiles);
 
                 while (running) {
-                    var header = new byte[2];
-                    serialPort.Read(header, 0, 2);
+                    var header = new int[2];
+                    header[0] = serialPort.ReadByte();
+                    header[1] = serialPort.ReadByte(); 
                     if (header[0] == 0x24 && header[1] == 0x47) {  // "$G" is a GPS message
                         var line = serialPort.ReadLine();
                         string msg = "$G" + line;
                         //callback?.Invoke(new SerialData(msg));
                     }
-                    else if (header[0] == 0xB5 && header[1] == 0x62) {  // UBX HNR message
+                    else if (header[0] == 0xB5 && header[1] == 0x62) {  // UBX message
                         var clsmid = new byte[2];
                         var mlen = new byte[2];
                         var chksum = new byte[2];
                         
                         serialPort.Read(clsmid, 0, 2);
-                        serialPort.Read(mlen, 0, 2);
                         
-                        var len = BitConverter.ToInt16(mlen, 0);
-                        var msgdata = new byte[len];
-                        serialPort.Read(msgdata, 0, len);
-                        serialPort.Read(chksum, 0, 2);
-                        
-                        // now check class id and message id
-                        if (clsmid[0] == 0x28 && clsmid[1] == 0x01) {
-                            hnratt.Write(msgdata);
+                        if ((clsmid[0] == 0x05 && clsmid[1] == 0x01)  || 
+                            (clsmid[0] == 0x05 && clsmid[1] == 0x00)) {  // ACK-ACK-NAK, continue
+                            serialPort.Read(chksum, 0, 2); // read past the 2-byte chksum
+                            Console.WriteLine("ACK-ACK or ACK-NAK received!");
                         }
-                        else if (clsmid[0] == 0x28 && clsmid[1] == 0x00) {
-                            //hnrpvt.Write(msgdata);
+                        else {
+                            serialPort.Read(mlen, 0, 2); // get message payload length
+                            var len = BitConverter.ToInt16(mlen, 0);
+                            var msgdata = new byte[len]; // prepare payload receive buffer 
+                            serialPort.Read(msgdata, 0, len); // get the payload
+                            serialPort.Read(chksum, 0, 2); // read past the 2-byte chksum
+                            
+                            // now check class id and message id
+                            if (clsmid[0] == 0x28 && clsmid[1] == 0x01) {  // HNR-ATT message
+                                hnratt.Write(msgdata);
+                            }
+                            else if (clsmid[0] == 0x28 && clsmid[1] == 0x00) {  // HNR-PVT message
+                                hnrpvt.Write(msgdata);
+                            }
+                            else if (clsmid[0] == 0x10 && clsmid[1] == 0x015) {  // EFS-INS message
+                                esf.Write(msgdata);
+                            } 
                         }
                     }
                 }

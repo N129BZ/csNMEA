@@ -6,7 +6,8 @@
         },
         "processOptions": {
             "ubxMessages": false,
-            "createCSVfiles":true
+            "createCSVfiles":true,
+            "CSVfilepath": "/home/bro/Programming"
         }
     }
 }

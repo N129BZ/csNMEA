@@ -42,7 +42,7 @@ namespace csNMEA
 
         public ESFINS(bool writefile) {
 
-            var fpath = "/home/bro/Programming/ESF-INS.csv";
+            var fpath = $"{Program.CSVFilePath}/ESF-INS.csv";
             var exists = File.Exists(fpath);
             writeFile = writefile;
             if (writefile) {

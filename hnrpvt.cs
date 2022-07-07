@@ -88,7 +88,7 @@ namespace csNMEA {
         private bool writeFile = false;
 
         public HNRPVT(bool writefile) {
-            var fpath = "/home/bro/Programming/UBX-PVT.csv";
+            var fpath = $"{Program.CSVFilePath}/UBX-PVT.csv";
             var existed = File.Exists(fpath);
             writeFile = writefile;
             if (writefile) {

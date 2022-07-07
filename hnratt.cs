@@ -40,7 +40,7 @@ namespace csNMEA {
         private bool writeFile = false;
 
         public HNRATT(bool writefile) {
-            var fpath = $"/home/bro/Programming/UBX-ATT.csv";
+            var fpath = $"{Program.CSVFilePath}/UBX-ATT.csv";
             var existed = File.Exists(fpath);
             writeFile = writefile;
             if (writefile) {

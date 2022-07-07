@@ -11,14 +11,16 @@ namespace csNMEA
 
     class Program 
     {
+        private static string csvpath = "/home/bro/Programming/";
+        
         public static void Main(string[] args) 
         {
             int baudrate = 0; 
             string port = ""; 
             bool processUbx = false;
             bool createCSVfiles = false;
-
             bool hasArgs = false; // used to test for either args or csGPSconfig file
+            
 
             if (args.Length > 0) {  
                 // in Linux even if no args were passed, there will be a "csNMEA" arg :/
@@ -48,6 +50,7 @@ namespace csNMEA
                     baudrate = (int)jo["csNMEA"]["serialport"]["baudrate"];
                     processUbx = (bool)jo["csNMEA"]["processOptions"]["ubxMessages"];
                     createCSVfiles = (bool)jo["csNMEA"]["processOptions"]["createCSVfiles"];
+                    csvpath = (string)jo["csNMEA"]["processOptions"]["CSVfilepath"];
                 }
                 catch (System.IO.FileNotFoundException) {
                     Console.WriteLine("No csGPSconfig.json file and no args! Exiting.");
@@ -161,6 +164,12 @@ namespace csNMEA
             Console.WriteLine(json);
         }
 
+        public static string CSVFilePath { 
+            get {
+                return csvpath;
+            }
+        }
+        
         public static string GetTimestamp() {
             var unixtimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             return $"{unixtimestamp}.{DateTime.Now.Ticks / (TimeSpan.TicksPerMillisecond / 1000)}";

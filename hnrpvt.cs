@@ -85,23 +85,27 @@ namespace csNMEA {
     public class HNRPVT {
 
         private StreamWriter sw;
-        private bool createFile = false;
+        private bool writeFile = false;
 
-        public HNRPVT(bool createfile) {
-            var unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            var fpath = "/home/bro/Programming/UBX-PVT_" + unixTimestamp.ToString() + ".csv";
-            createFile = createfile;
-            if (createFile) {
+        public HNRPVT(bool writefile) {
+            var fpath = "/home/bro/Programming/UBX-PVT.csv";
+            var existed = File.Exists(fpath);
+            writeFile = writefile;
+            if (writefile) {
                 sw = new System.IO.StreamWriter(new System.IO.FileStream(fpath, FileMode.OpenOrCreate));
-                sw.WriteLine("lon,lat,altGPS,altMSL,speedGND,speed3D,motHead,motVeh");
+                if (!existed)
+                {
+                    sw.WriteLine("timestamp,lon,lat,altGPS,altMSL,speedGND,speed3D,motHead,motVeh");
+                }
             }
         }
         
-        public void Write(byte[] fielddata) {
+        public async void WriteAsync(byte[] fielddata) {
 
             var handle = GCHandle.Alloc(fielddata, GCHandleType.Pinned);
             tHNRPVT tpvt = (tHNRPVT)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(tHNRPVT));
-
+            
+            var ts = Program.GetTimestamp();
             var lon = (tpvt.lon * .0000001).ToString("0.#####"); 
             var lat = (tpvt.lat * .0000001).ToString("0.#####");;
             var altGPS = (tpvt.htGPS * 0.00328084).ToString("0.##");
@@ -110,12 +114,13 @@ namespace csNMEA {
             var sp3D = (tpvt.speed3D * 0.00223694).ToString("0.##");
             var motH = (tpvt.headMot * .00001).ToString("0.##");
             var motV = (tpvt.headVeh * .00001).ToString("0.##");
-            
-            if (createFile) {
-                sw.WriteLine($"{lon},{lat},{altGPS},{altMSL},{spGND},{sp3D},{motH},{motV}");
-                sw.Flush();
+            if (writeFile) {    
+                await sw.WriteLineAsync($"{ts},{lon},{lat},{altGPS},{altMSL},{spGND},{sp3D},{motH},{motV}");
+                await(sw.FlushAsync());
             }
-            Console.WriteLine($"HNR-PVT - {lon},{lat},{altGPS},{altMSL},{spGND},{sp3D},{motH},{motV}");
+            else {
+                Console.WriteLine($"HNR-PVT {ts} - {lon},{lat},{altGPS},{altMSL},{spGND},{sp3D},{motH},{motV}");
+            }
         }
     }
 }

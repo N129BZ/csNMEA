@@ -5,8 +5,8 @@
             "baudrate": 115200
         },
         "processOptions": {
-            "ubxMessages": true,
-            "createCSVfiles":false
+            "ubxMessages": false,
+            "createCSVfiles":true
         }
     }
 }

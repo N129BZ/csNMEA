@@ -37,23 +37,27 @@ namespace csNMEA {
     public class HNRATT {
 
         private StreamWriter sw;
-        private bool createFile = false;
+        private bool writeFile = false;
 
-        public HNRATT(bool createfile) {
-            var unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-            var fpath = "/home/bro/Programming/UBX-ATT_" + unixTimestamp.ToString() + ".csv";
-            createFile = createfile;
-            if (createfile) {
+        public HNRATT(bool writefile) {
+            var fpath = $"/home/bro/Programming/UBX-ATT.csv";
+            var existed = File.Exists(fpath);
+            writeFile = writefile;
+            if (writefile) {
                 sw = new System.IO.StreamWriter(new System.IO.FileStream(fpath, FileMode.OpenOrCreate));
-                sw.WriteLine("roll,pitch,heading,accRoll,accPitch,accHeading");
+                if (!existed)
+                {
+                    sw.WriteLine("timestamp,roll,pitch,heading,accRoll,accPitch,accHeading");
+                }
             }
         }
 
-        public void Write(byte[] fielddata) {
+        public async void WriteAsync(byte[] fielddata) {
             
             var handle = GCHandle.Alloc(fielddata, GCHandleType.Pinned);
             tHNRATT tatt = (tHNRATT)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(tHNRATT));
-
+            
+            var ts = Program.GetTimestamp();
             var r = (tatt.roll * .00001).ToString("0.##");
             var p = (tatt.pitch * .00001).ToString("0.##"); 
             var h = (tatt.heading * .00001).ToString("0.##");
@@ -62,11 +66,13 @@ namespace csNMEA {
             var pa = (tatt.accPitch * .00001).ToString("0.##"); 
             var ha = (tatt.accHeading * .00001).ToString("0.##");
 
-            if (createFile) {
-                sw.WriteLine($"{r},{p},{h},{ra},{pa},{ha}");
-                sw.Flush();
+            if (writeFile) {
+                await sw.WriteLineAsync($"{ts},{r},{p},{h},{ra},{pa},{ha}");
+                await sw.FlushAsync();
             }
-            Console.WriteLine($"HNR-ATT - Roll|Accuracy: {r}|{ra} Pitch|Accuracy: {p}|{pa} Heading|Accuracy: {h}|{ha}");
+            else {
+                Console.WriteLine($"HNR-ATT {ts} - Roll|Accuracy: {r}|{ra} Pitch|Accuracy: {p}|{pa} Heading|Accuracy: {h}|{ha}");
+            }
         }
     }
 }

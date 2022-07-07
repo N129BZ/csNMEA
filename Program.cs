@@ -160,5 +160,10 @@ namespace csNMEA
 
             Console.WriteLine(json);
         }
+
+        public static string GetTimestamp() {
+            var unixtimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            return $"{unixtimestamp}.{DateTime.Now.Ticks / (TimeSpan.TicksPerMillisecond / 1000)}";
+        }
     }
 }

@@ -67,7 +67,7 @@ namespace csNMEA
 
                 var hnratt = new HNRATT(createCSVfiles);
                 var hnrpvt = new HNRPVT(createCSVfiles);
-                ESFINS esf = new ESFINS(createCSVfiles);
+                var esf = new ESFINS(createCSVfiles);
 
                 while (running) {
                     var header = new int[2];
@@ -99,13 +99,13 @@ namespace csNMEA
                             
                             // now check class id and message id
                             if (clsmid[0] == 0x28 && clsmid[1] == 0x01) {  // HNR-ATT message
-                                hnratt.Write(msgdata);
+                                hnratt.WriteAsync(msgdata);
                             }
                             else if (clsmid[0] == 0x28 && clsmid[1] == 0x00) {  // HNR-PVT message
-                                hnrpvt.Write(msgdata);
+                                hnrpvt.WriteAsync(msgdata);
                             }
                             else if (clsmid[0] == 0x10 && clsmid[1] == 0x015) {  // EFS-INS message
-                                esf.Write(msgdata);
+                                esf.WriteAsync(msgdata);
                             } 
                         }
                     }
